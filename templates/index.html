@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRINT ON MY PRINTER LOL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+       :root {
+    /* Web3 Inspired Color Palette */
+    --primary-color: #6a5acd; /* Sleek purple */
+    --secondary-color: #00ffff; /* Vibrant cyan */
+    --background-color: #0f0f1a; /* Deep dark background */
+    --card-background: #1a1a2e; /* Dark card background */
+    --text-color: #e0e0ff; /* Soft blue-white text */
+    --accent-color: #8a2be2; /* Vibrant accent */
+    --gradient-start: #6a5acd;
+    --gradient-end: #8a2be2;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary-color) var(--background-color);
+}
+
+/* Custom Scrollbar */
+*::-webkit-scrollbar {
+    width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: var(--background-color);
+}
+
+*::-webkit-scrollbar-thumb {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    border-radius: 10px;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    background: radial-gradient(ellipse at bottom, var(--background-color) 0%, #090911 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 0;
+    perspective: 1000px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    margin-top: 4rem;
+    box-shadow: 0 10px 30px rgba(106, 90, 205, 0.4);
+    transform: translateZ(50px);
+    transition: all 0.3s ease;
+}
+
+
+.upload-section {
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.file-label {
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.file-label::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: all 0.5s ease;
+}
+
+.file-label:hover::before {
+    left: 100%;
+}
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+    width: 100%;
+}
+
+.image-grid img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 15px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.image-grid img:hover {
+    transform: scale(1.05) rotate(2deg);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+.countdown {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    margin: 1rem 0;
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+
+    .image-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Subtle Animations */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Additional Web3-like Enhancements */
+.collage-section {
+    background-color: var(--card-background);
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 2rem;
+    overflow: hidden;
+}
+
+.collage-section h2 {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    padding: 1rem;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PRINT ON MY PRINTER</h1>
+            <p>EVERYONE UPLOAD IMAGE, IMAGE COMBINE, IMAGE PRINT!</p>
+        </div>
+
+        <div style="padding-bottom: 56.25%; position: relative;"><iframe style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;" width="100%" height="100%" src="https://player.twitch.tv/?autoplay=false&video=1863123403" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen" ><small>Powered by <a href="https://embed.tube/embed-code-generator/twitch/">twitch embed</a> generator</small></iframe></div>
+        <div class="upload-section">
+            <input style="display: none;" type="file" id="fileInput" class="file-input" accept="image/*">
+            <label for="fileInput" class="file-label">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Choose Image
+            </label>
+
+            <div id="countdown" class="countdown">Next PRINT: 60 seconds</div>
+
+            <div id="uploadedImages" class="image-grid"></div>
+        </div>
+
+        <div class="collage-section" >
+            <h2>Latest Print</h2>
+
+            <div style="display:flex; justify-content:center;">
+                <div id="recentCollage" ></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const collageInterval = 60; // Replace with dynamic interval if available
+        const socket = io();
+
+        function updateUploadedImages(images) {
+            const uploadedImagesDiv = document.getElementById('uploadedImages');
+            uploadedImagesDiv.innerHTML = images.map(filename =>
+                `<img src="/uploads/${filename}" alt="${filename}">`
+            ).join('');
+        }
+
+        function updateRecentCollage(filename) {
+            const recentCollageDiv = document.getElementById('recentCollage');
+            if (filename) {
+                const uploadedImagesDiv = document.getElementById('uploadedImages');
+                uploadedImagesDiv.innerHTML = "";
+                recentCollageDiv.innerHTML =
+                    `<img width='500' src="/collages/${filename}" alt="Recent Collage">`;
+            } else {
+                recentCollageDiv.innerHTML = '<p>No collage generated yet</p>';
+            }
+        }
+
+        function startCountdown(remainingTime) {
+            const countdownDiv = document.getElementById('countdown');
+
+            function updateCountdown() {
+                if (remainingTime > 0) {
+                    countdownDiv.textContent = `Next Print: ${remainingTime} seconds`;
+                    remainingTime--;
+                    setTimeout(updateCountdown, 1000);
+                } else {
+                    countdownDiv.textContent = 'Generating Print...';
+                }
+            }
+
+            updateCountdown();
+        }
+
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    fileInput.value = '';
+                } else {
+                    alert(data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Upload failed');
+            });
+        }
+
+        socket.on('initial_state', function(data) {
+            updateUploadedImages(data.uploaded_images);
+            updateRecentCollage(data.recent_collage);
+            startCountdown(data.remaining_time);
+        });
+
+        socket.on('new_upload', function(data) {
+            updateUploadedImages(data.uploaded_images);
+        });
+
+        socket.on('new_collage', function(data) {
+            updateRecentCollage(data.filename);
+            updateUploadedImages(data.uploaded_images);
+            startCountdown(collageInterval);
+        });
+
+        document.getElementById('fileInput').addEventListener('change', uploadFile);
+    </script>
+</body>
+</html>
