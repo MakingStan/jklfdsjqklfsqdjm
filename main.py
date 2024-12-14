@@ -45,6 +45,9 @@ def create_dynamic_collage():
     """
     global last_collage_time, recent_collage
 
+
+    print("creating dynamic collage")
+
     # Filter images from last 60 seconds
     current_time = datetime.now()
     recent_images = [
@@ -162,10 +165,13 @@ def collage_scheduler():
     global uploaded_images, last_collage_time
 
     while True:
+        print("before sleep")
         time.sleep(COLLAGE_INTERVAL)
 
         # Create collage
         create_dynamic_collage()
+        print("collage after")
+
 
         # Clean up uploaded images older than interval
         current_time = datetime.now()
@@ -173,6 +179,9 @@ def collage_scheduler():
             img for img in uploaded_images
             if current_time - img['timestamp'] <= timedelta(seconds=COLLAGE_INTERVAL)
         ]
+
+        print("after cleanup")
+
 
 
 @app.route('/')
