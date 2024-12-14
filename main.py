@@ -227,10 +227,14 @@ def upload_file():
 @socketio.on('connect')
 def handle_connect():
     """Send current state to newly connected clients"""
+    remaining_time = max(0, COLLAGE_INTERVAL - (datetime.now() - last_collage_time).total_seconds())
+    next_collage_time = last_collage_time + timedelta(seconds=COLLAGE_INTERVAL)
+
     emit('initial_state', {
         'uploaded_images': [os.path.basename(img['path']) for img in uploaded_images],
         'recent_collage': recent_collage,
-        'remaining_time': int(max(0, COLLAGE_INTERVAL - (datetime.now() - last_collage_time).total_seconds()))
+        'remaining_time': int(remaining_time),
+        'next_collage_time': next_collage_time.isoformat()  # Send the exact next collage time
     })
 
 

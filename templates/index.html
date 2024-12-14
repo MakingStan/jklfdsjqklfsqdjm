@@ -240,21 +240,24 @@ body {
             }
         }
 
-        function startCountdown(remainingTime) {
-            const countdownDiv = document.getElementById('countdown');
+       function startCountdown(remainingTime, nextCollageTime) {
+    const countdownDiv = document.getElementById('countdown');
+    const targetTime = new Date(nextCollageTime).getTime();
 
-            function updateCountdown() {
-                if (remainingTime > 0) {
-                    countdownDiv.textContent = `Next Print: ${remainingTime} seconds`;
-                    remainingTime--;
-                    setTimeout(updateCountdown, 1000);
-                } else {
-                    countdownDiv.textContent = 'Generating Print...';
-                }
-            }
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const timeLeft = Math.max(0, Math.floor((targetTime - now) / 1000));
 
-            updateCountdown();
+        if (timeLeft > 0) {
+            countdownDiv.textContent = `Next Print: ${timeLeft} seconds`;
+            setTimeout(updateCountdown, 1000);
+        } else {
+            countdownDiv.textContent = 'Generating Print...';
         }
+    }
+
+    updateCountdown();
+}
 
         function uploadFile() {
             const fileInput = document.getElementById('fileInput');
@@ -286,21 +289,25 @@ body {
             });
         }
 
-        socket.on('initial_state', function(data) {
-            updateUploadedImages(data.uploaded_images);
-            updateRecentCollage(data.recent_collage);
-            startCountdown(data.remaining_time);
-        });
+       // Update socket event listener
+socket.on('initial_state', function(data) {
+    updateUploadedImages(data.uploaded_images);
+    updateRecentCollage(data.recent_collage);
+    startCountdown(data.remaining_time, data.next_collage_time);
+});
 
         socket.on('new_upload', function(data) {
             updateUploadedImages(data.uploaded_images);
         });
 
-        socket.on('new_collage', function(data) {
-            updateRecentCollage(data.filename);
-            updateUploadedImages(data.uploaded_images);
-            startCountdown(collageInterval);
-        });
+       socket.on('new_collage', function(data) {
+    updateRecentCollage(data.filename);
+    updateUploadedImages(data.uploaded_images);
+
+    // Recalculate next collage time when a new collage is generated
+    const nextCollageTime = new Date(new Date().getTime() + collageInterval * 1000).toISOString();
+    startCountdown(collageInterval, nextCollageTime);
+});
 
         document.getElementById('fileInput').addEventListener('change', uploadFile);
     </script>
